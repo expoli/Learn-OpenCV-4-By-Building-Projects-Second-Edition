@@ -1,11 +1,13 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+
 using namespace std;
 
 // OpenCV includes
 #include "opencv2/core.hpp"
 #include "opencv2/highgui.hpp"
+
 using namespace cv;
 
 // OpenCV command line parser functions
@@ -27,35 +29,35 @@ int main( int argc, const char** argv )
 	    return 0;
 	}
 
-	String videoFile= parser.get<String>(0);
-	
-	// Check if params are correctly parsed in his variables
-	if (!parser.check())
-	{
-	    parser.printErrors();
-	    return 0;
-	}
+    String videoFile = parser.get<String>(0);
 
-	VideoCapture cap; // open the default camera
-	if(videoFile != "")
-		cap.open(videoFile);
-	else
-		cap.open("Recording3.webm");
-    if(!cap.isOpened())  // check if we succeeded
+    // Check if params are correctly parsed in his variables
+    if (!parser.check()) {
+        parser.printErrors();
+        return 0;
+    }
+
+    VideoCapture cap;
+    if (!videoFile.empty())
+        cap.open(videoFile);
+    else
+        // open the default camera
+        cap.open(0);
+
+    if (!cap.isOpened())  // check if we succeeded
         return -1;
 
-    namedWindow("Video",1);
-    for(;;)
-    {
+    namedWindow("Video", 1);
+    for (;;) {
         Mat frame;
         cap >> frame; // get a new frame from camera
-        if(frame.empty())
-        	return 0;
+        if (frame.empty())
+            return 0;
         imshow("Video", frame);
-        if(waitKey(30) >= 0) break;
+        if (waitKey(30) >= 0) break;
     }
     // Release the camera or video cap
     cap.release();
-	
-	return 0;
+
+    return 0;
 }
