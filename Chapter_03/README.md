@@ -22,6 +22,7 @@ make
 The following applications are generated.
 
 ```
+./Photo_Tool
 ./ch3_sample1
 ./ch3_sample2
 ./ch3_sample3
@@ -29,6 +30,9 @@ The following applications are generated.
 ./ch3_sample5
 ./ch3_sample6
 ```
+
+Photo_Tool. OpenCV command line
+- OpenCV command line parser
 
 Sample 1. Basic GUI
 - Differences between Qt and Normal GUI
