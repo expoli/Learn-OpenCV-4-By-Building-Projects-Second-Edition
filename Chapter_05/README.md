@@ -20,7 +20,7 @@ make
 The following applications are generated.
 
 ```
-./Chapter5
+./Chapter5 ../data/test.pgm ../data/light.pgm --lightMethod=1 --segMethod=1
 ```
 
 Parameters that accepts executable:
