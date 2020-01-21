@@ -55,8 +55,15 @@ int main(int argc, const char **argv) {
     }
 
     String img_file = parser.get<String>(0);
-    String light_pattern_file = "../data/pattern.pgm";
-
+    if (img_file.empty()) {
+        img_file = "../data/test.pgm";
+        cout << "using the default image test.pgm!" << endl;
+    }
+    String light_pattern_file = parser.get<String>(0);
+    if (light_pattern_file.empty()) {
+        light_pattern_file = "../data/pattern.pgm";
+        cout << "using the default pattern image" << endl;
+    }
     // Check if params are correctly parsed in his variables
     if (!parser.check()) {
         parser.printErrors();
