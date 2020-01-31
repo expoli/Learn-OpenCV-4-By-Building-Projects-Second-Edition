@@ -218,6 +218,9 @@ void plotTrainData(Mat trainData, Mat labels, float *error = NULL) {
 * @return vector< vector<float> > a matrix of rows of features for each object detected
 **/
 vector<vector<float> > ExtractFeatures(Mat img, vector<int> *left = NULL, vector<int> *top = NULL) {
+    // 输出变量
+    // 查找轮廓算法分割中使用的轮廓变量
+    // 输入图像的副本，findcoutours 函数会修改输入图像
     vector<vector<float> > output;
     vector<vector<Point> > contours;
     Mat input = img.clone();
@@ -225,36 +228,42 @@ vector<vector<float> > ExtractFeatures(Mat img, vector<int> *left = NULL, vector
     vector<Vec4i> hierarchy;
     findContours(input, contours, hierarchy, RETR_CCOMP, CHAIN_APPROX_SIMPLE);
     // Check the number of objects detected
-    if (contours.size() == 0) {
+    if (contours.empty()) {
         return output;
     }
     RNG rng(0xFFFFFFFF);
     for (int i = 0; i < contours.size(); i++) {
-
+        // 黑色图像
         Mat mask = Mat::zeros(img.rows, img.cols, CV_8UC1);
+        // 使用值1、生成掩膜图像
         drawContours(mask, contours, i, Scalar(1), FILLED, LINE_8, hierarchy, 1);
+        // 计算区域内的1确定面积
         Scalar area_s = sum(mask);
         float area = area_s[0];
 
-        if (area > 500) { //if the area is greather than min.
+        //if the area is greather than min.
+        if (area > 500) {
 
             RotatedRect r = minAreaRect(contours[i]);
             float width = r.size.width;
             float height = r.size.height;
-            float ar = (width < height) ? height / width : width / height;
-
+            float ar = (width < height) ? height / width : width / height;  // 纵横比
+            // 浮点行向量储存数据
             vector<float> row;
             row.push_back(area);
             row.push_back(ar);
+            // 添加到输出向量
             output.push_back(row);
+            // 如果传递了其它参数，则添加左上角的值以输出这些参数
             if (left != NULL) {
                 left->push_back((int) r.center.x);
             }
             if (top != NULL) {
                 top->push_back((int) r.center.y);
             }
-
+            // 显示检测到的对象
             miw->addImage("Extract Features", mask * 255);
+            // 返回特征向量
             miw->render();
             waitKey(10);
         }
@@ -275,7 +284,7 @@ Mat removeLight(Mat img, Mat pattern) {
     Mat img32, pattern32;
     img.convertTo(img32, CV_32F);
     pattern.convertTo(pattern32, CV_32F);
-    // Divide the imabe by the pattern
+    // Divide the image by the pattern
     aux = 1 - (img32 / pattern32);
     // Scale it to convert o 8bit format
     aux = aux * 255;
@@ -353,6 +362,7 @@ bool readFolderAndExtractFeatures(string folder, int label, int num_for_test,
 }
 
 void trainAndTest() {
+    // 储存训练和测试数据的变量
     vector<float> trainingData;
     vector<int> responsesData;
     vector<float> testData;
@@ -360,9 +370,10 @@ void trainAndTest() {
 
     int num_for_test = 20;
 
+    // readFolderAndExtractFeatures 使用OpenCv 的VideoCaptrue 函数读取文件夹中的所有图像，包括视频和相见的帧
     // Get the nut images
-    readFolderAndExtractFeatures("../data/nut/tuerca_%04d.pgm", 0, num_for_test, trainingData, responsesData, testData,
-                                 testResponsesData);
+    readFolderAndExtractFeatures("../data/nut/tuerca_%04d.pgm", 0, num_for_test, trainingData, responsesData,
+                                 testData, testResponsesData);
     // Get and process the ring images
     readFolderAndExtractFeatures("../data/ring/arandela_%04d.pgm", 1, num_for_test, trainingData, responsesData,
                                  testData, testResponsesData);
@@ -375,6 +386,7 @@ void trainAndTest() {
     cout << "Num of test samples: " << testResponsesData.size() << endl;
 
     // Merge all data
+    // 把向量转化为Mat格式
     Mat trainingDataMat(trainingData.size() / 2, 2, CV_32FC1, &trainingData[0]);
     Mat responses(responsesData.size(), 1, CV_32SC1, &responsesData[0]);
 
@@ -383,6 +395,7 @@ void trainAndTest() {
 
     Ptr<TrainData> tdata = TrainData::create(trainingDataMat, ROW_SAMPLE, responses);
 
+    // 创建和训练模型
     svm = cv::ml::SVM::create();
     svm->setType(cv::ml::SVM::C_SVC);
     svm->setNu(0.05);
@@ -390,6 +403,7 @@ void trainAndTest() {
     svm->setDegree(1.0);
     svm->setGamma(2.0);
     svm->setTermCriteria(TermCriteria(TermCriteria::MAX_ITER, 100, 1e-6));
+    // 训练SVM模型
     svm->train(tdata);
 
     if (testResponsesData.size() > 0) {
@@ -402,7 +416,7 @@ void trainAndTest() {
         // Error calculation
         Mat errorMat = testPredict != testResponses;
         float error = 100.0f * countNonZero(errorMat) / testResponsesData.size();
-        cout << "Error: " << error << "\%" << endl;
+        cout << "Error: " << error << "%" << endl;
         // Plot training data with error label
         plotTrainData(trainingDataMat, responses, &error);
 
