@@ -22,9 +22,9 @@ The following applications are generated.
 
 ```
 ./backgroundSubtraction
-./dilation  
-./erosion  
+./dilation  ../resources/test.png 5
+./erosion  ../resources/test.png 5
 ./frameDifferencing  
-./morphologicalOperations
+./morphologicalOperations ../resources/test.png 5
 
 ```
