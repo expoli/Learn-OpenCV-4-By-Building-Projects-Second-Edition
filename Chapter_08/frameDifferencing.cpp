@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
 
     // Create the capture object
     // 0 -> input arg that specifies it should take the input from the webcam
-    VideoCapture cap(0);
+    VideoCapture cap(0, CAP_V4L);
 
     // If you cannot open the webcam, stop the execution!
     if (!cap.isOpened())
