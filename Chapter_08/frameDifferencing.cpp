@@ -66,6 +66,7 @@ int main(int argc, char *argv[]) {
     // Iterate until the user presses the Esc key
     while (true) {
         // Show the object movement
+        imshow("Frame", curFrame);
         imshow("Object Movement", frameDiff(prevFrame, curFrame, nextFrame));
 
         // Update the variables and grab the next frame
@@ -87,5 +88,5 @@ int main(int argc, char *argv[]) {
     // Close all windows
     destroyAllWindows();
 
-    return 1;
+    return 0;
 }
