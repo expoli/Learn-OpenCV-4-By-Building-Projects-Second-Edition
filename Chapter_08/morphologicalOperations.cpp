@@ -88,20 +88,20 @@ Mat performMorphologicalGradient(Mat inputImage, int morphologyElement, int morp
 // Function to perform top hat operation
 Mat performTopHat(Mat inputImage, int morphologyElement, int morphologySize) {
     Mat outputImage;
-    int morphologyType;
-
-    if (morphologyElement == 0)
-        morphologyType = MORPH_RECT;
-
-    else if (morphologyElement == 1)
-        morphologyType = MORPH_CROSS;
-
-    else if (morphologyElement == 2)
-        morphologyType = MORPH_ELLIPSE;
-
-    // Create the structuring element for erosion
-    Mat element = getStructuringElement(morphologyType, Size(2 * morphologySize + 1, 2 * morphologySize + 1),
-                                        Point(morphologySize, morphologySize));
+//    int morphologyType;
+//
+//    if (morphologyElement == 0)
+//        morphologyType = MORPH_RECT;
+//
+//    else if (morphologyElement == 1)
+//        morphologyType = MORPH_CROSS;
+//
+//    else if (morphologyElement == 2)
+//        morphologyType = MORPH_ELLIPSE;
+//
+//    // Create the structuring element for erosion
+//    Mat element = getStructuringElement(morphologyType, Size(2 * morphologySize + 1, 2 * morphologySize + 1),
+//                                        Point(morphologySize, morphologySize));
 
     // Apply top hat operation to the image using the structuring element
     outputImage = inputImage - performOpening(inputImage, morphologyElement, morphologySize);
@@ -113,20 +113,20 @@ Mat performTopHat(Mat inputImage, int morphologyElement, int morphologySize) {
 // Function to perform black hat operation
 Mat performBlackHat(Mat inputImage, int morphologyElement, int morphologySize) {
     Mat outputImage;
-    int morphologyType;
-
-    if (morphologyElement == 0)
-        morphologyType = MORPH_RECT;
-
-    else if (morphologyElement == 1)
-        morphologyType = MORPH_CROSS;
-
-    else if (morphologyElement == 2)
-        morphologyType = MORPH_ELLIPSE;
-
-    // Create the structuring element for erosion
-    Mat element = getStructuringElement(morphologyType, Size(2 * morphologySize + 1, 2 * morphologySize + 1),
-                                        Point(morphologySize, morphologySize));
+//    int morphologyType;
+//
+//    if (morphologyElement == 0)
+//        morphologyType = MORPH_RECT;
+//
+//    else if (morphologyElement == 1)
+//        morphologyType = MORPH_CROSS;
+//
+//    else if (morphologyElement == 2)
+//        morphologyType = MORPH_ELLIPSE;
+//
+//    // Create the structuring element for erosion
+//    Mat element = getStructuringElement(morphologyType, Size(2 * morphologySize + 1, 2 * morphologySize + 1),
+//                                        Point(morphologySize, morphologySize));
 
     // Apply black hat operation to the image using the structuring element
     outputImage = performClosing(inputImage, morphologyElement, morphologySize) - inputImage;
